@@ -10,6 +10,7 @@ import "./loadEnvironment.js";
 // Getting all the routes
 //var indexRouter = require('./routes/index');
 import loginRouter from "./routes/login.js";
+import signUpRouter from "./routes/sign_up.js"
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use(function(req,res, next){
 
 // Set the paths for usage
 app.use('/login', loginRouter);
+app.use("/signUp", signUpRouter);
 
 app.listen(PORT, ()=>{
     console.log(`Server is listening on port ${PORT}`);

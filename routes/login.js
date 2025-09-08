@@ -1,10 +1,8 @@
 import express, { response } from "express"
 import db from "../db/conn_db.js";
+import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
-
-import bcrypt from "bcrypt";
-const saltRounds = 10;
-
+import { User } from "../middleware/user_model.js"
 const router = express.Router();
 
 router.post("/", async (req,res) =>{
@@ -18,14 +16,17 @@ router.post("/", async (req,res) =>{
 
     let users = db.collection("users");
 
-    let result = await users.find({email: `${authInfo.username}`}).toArray();
+    let result = await users.find({email: null}).toArray();
 
-    if(!result){
+    console.log(result);
+
+    if(result.length !== 0){
+        return res.status(200).send({status: 'recieved', response: result});
+    }
+    else{
         return res.status(400).send("Account does not exits");
     }
 
-    res.status(200).send({status: 'recieved', response: result});
-    //console.log(result);
 });
 
 export default router;
