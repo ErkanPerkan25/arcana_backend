@@ -4,8 +4,11 @@ import mongoose from "mongoose";
 
 // Replace the uri string with your connection string
 const uri = process.env.ATLAS_URI || "";
-const db = mongoose.connect(uri);
+const db = mongoose.connect(uri, {
+    dbName:"Arcana_db",
+});
 
+/*
 const client = new MongoClient(uri,{
     serverApi: {
         version: ServerApiVersion.v1,
@@ -22,6 +25,7 @@ try{
 catch(e){
     console.error(e);
 }
+*/
 
 //let db = conn.db("Arcana_db");
 

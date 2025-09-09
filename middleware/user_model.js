@@ -1,43 +1,59 @@
-import { Schema } from mongoose;
-import { isEmail, isModified } from "validator"
-import bcrypt from "bcrypt";
 import mongoose from "mongoose";
-const saltRounds = 10;
+import { Schema } from "mongoose";
+import pkg from "validator";
+const { isEmail } = pkg;
+//import { isEmail} from "validator";
+import bcrypt from "bcrypt";
+const salt = await bcrypt.genSalt(10);
 
 
 const schema = new Schema({
     username:{
-        type: string,
+        type: "string",
         require: true,
     },
     email:{
-        type: string,
+        type: "string",
         require: true,
         validate: [isEmail, "Invalid email"],
         createIndexes: {unique: true},
     },
     password:{
-        type: string,
+        type: "string",
         require: true,
     }
 });
 
+// Saves user to database
 schema.pre("save", async function save(next){
-    if(!this.isModified("password")) return next();
+    const user = this;    
+
+    if(!user.isModified("password")) return next();
+
+    if(user.email)
+        user.email = user.email.trim().toLowerCase();
+
+    if(user.username)
+        user.username = user.username.trim();
     
     try {
-        const salt = await bcrypt.genSalt(saltRounds);
-        this.password = await bcrypt.hash(this.password, salt);
+        user.password = await bcrypt.hash(user.password, salt);
+        
+        console.log(user.password)
+
         return next();
-    }catch(err){
+    }
+    catch(err){
         return next(err);
     }
 });
 
-schema.methods.validatePassword = async function validatePassword(data){
-    return bcrypt.compare(data, this.password);
-}
+// Compares passwords
+schema.methods.validatePassword = async function(data){
+    const hashedPass = await bcrypt.hash(data,salt);
+    return bcrypt.compare(hashedPass, this.password);
+};
 
-const User = mongoose.Model("User", schema);
+const User = mongoose.model("User", schema);
 
 export default User;
