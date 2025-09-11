@@ -8,19 +8,17 @@ import session from "express-session";
 import "./loadEnvironment.js";
 
 // Getting all the routes
-//var indexRouter = require('./routes/index');
-import loginRouter from "./routes/login.js";
-import signUpRouter from "./routes/sign_up.js"
+import authenticateRouter from "./routes/authenticate.js";
 
 const app = express();
 
 const PORT = process.env.PORT || 5050;
 
-app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(cors());
 
 // middleware for session
 app.set("trust proxy", 1); // trust first proxy
@@ -45,8 +43,7 @@ app.use(function(req,res, next){
 })
 
 // Set the paths for usage
-app.use('/login', loginRouter);
-app.use("/signUp", signUpRouter);
+app.use('/authenticate', authenticateRouter);
 
 app.listen(PORT, ()=>{
     console.log(`Server is listening on port ${PORT}`);
