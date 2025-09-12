@@ -45,7 +45,10 @@ router.post("/login", async (req,res) =>{
                     });
                 }
                 else{
-                    return res.status(400).send("Wrong email or passwrod!");
+                    //return res.status(400).send("Wrong email or passwrod!");
+                    return res.status(400).json({
+                        message: "Invalid credentials"
+                    });
                 }
             }
         })

@@ -1,18 +1,19 @@
-import createError from 'http-errors';
 import express from 'express';
-import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import cors from "cors";
 import session from "express-session";
 import "./loadEnvironment.js";
 
-// Getting all the routes
-import authenticateRouter from "./routes/authenticate.js";
-
 const app = express();
 
 const PORT = process.env.PORT || 5050;
+const SECRET = process.env.SECRET;
+
+// Getting all the routes
+import authenticateRouter from "./routes/authenticate.js";
+import dashboardRouter from "./routes/dashboard.js";
+
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -24,9 +25,14 @@ app.use(cors());
 app.set("trust proxy", 1); // trust first proxy
 app.use(session({
     resave: false,
-    saveUninitialized: false,
-    secret: "shhh, very secret",
-    cookie: {} // set secure: true for HTTPS
+    saveUninitialized: true,
+    secret: SECRET,
+    cookie: {
+        maxAge: null,
+        httpOnly: true,
+        secure: true, // set secure: true for HTTPS
+    }, 
+    
 }));
 
 app.use(function(req,res, next){
@@ -43,7 +49,8 @@ app.use(function(req,res, next){
 })
 
 // Set the paths for usage
-app.use('/authenticate', authenticateRouter);
+app.use("/authenticate", authenticateRouter);
+app.use("/dashboard", dashboardRouter);
 
 app.listen(PORT, ()=>{
     console.log(`Server is listening on port ${PORT}`);
