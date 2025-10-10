@@ -13,6 +13,7 @@ const SECRET = process.env.SECRET;
 // Getting all the routes
 import authenticateRouter from "./routes/authenticate.js";
 import dashboardRouter from "./routes/dashboard.js";
+import booksRouter from "./routes/books.js";
 
 
 app.use(logger('dev'));
@@ -51,6 +52,7 @@ app.use(function(req,res, next){
 // Set the paths for usage
 app.use("/authenticate", authenticateRouter);
 app.use("/dashboard", dashboardRouter);
+app.use("/books", booksRouter);
 
 app.listen(PORT, ()=>{
     console.log(`Server is listening on port ${PORT}`);

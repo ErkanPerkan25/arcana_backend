@@ -11,7 +11,7 @@ router.post("/login", async (req,res) =>{
     User.findOne({ email: email })
         .then(existingUser =>{
             if(!existingUser){
-                console.log("Erro with user!");
+                console.log("Error with user!");
                 console.log(existingUser)
                 return res.status(400).send("Account does not exits");
             }
