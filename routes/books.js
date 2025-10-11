@@ -15,6 +15,10 @@ router.post("/addBook", async (req,res) =>{
             message: "Failed to verify token!",
         });
     }
+    else{
+        const pars = req.body;
+        console.log(pars);
+    }
 
 });
 

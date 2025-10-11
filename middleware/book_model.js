@@ -1,8 +1,5 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
-import bcrypt from "bcrypt";
-const salt = await bcrypt.genSalt(10);
-
 
 const schema = new Schema({
     title:{
@@ -18,6 +15,20 @@ const schema = new Schema({
         type: "string",
         require: true,
     }
+});
+
+schema.pre("save", async function save(next){
+    const book = this;    
+
+    if(book.title)
+        book.title = book.title.trim();
+
+    if(book.author)
+        book.author = book.author.trim();
+    
+    if(book.olid)
+        book.olid = book.author.trim();
+
 });
 
 const Book = mongoose.model("Book", schema);
