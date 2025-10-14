@@ -5,8 +5,21 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import User from "../middleware/user_model.js";
 
-router.post("/login", async (req,res) =>{
-    const { email, password } = req.body;
+const basicAuth = (req, res, next) =>{
+    if(!req.headers.authorization || req.headers.authorization.indexOf("Basic ") === -1){
+        return res.status(404).send("Missing authorization header");
+    }
+
+    const base64credentials = req.headers.authorization.split(" ")[1];
+    const credentials = Buffer.from(base64credentials, "base64").toString("ascii");
+    const [email, password] = credentials.split(":");
+    req.auth = {email: email, password: password};
+
+    next();
+}
+
+router.get("/login", basicAuth, async (req,res) =>{
+    const { email, password } = req.auth;
         
     User.findOne({ email: email })
         .then(existingUser =>{
