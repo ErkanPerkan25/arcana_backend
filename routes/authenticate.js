@@ -18,7 +18,7 @@ const basicAuth = (req, res, next) =>{
     next();
 }
 
-router.get("/login", basicAuth, async (req,res) =>{
+router.post("/login", basicAuth, async (req,res) =>{
     const { email, password } = req.auth;
         
     User.findOne({ email: email })
@@ -47,6 +47,8 @@ router.get("/login", basicAuth, async (req,res) =>{
                         console.error(err);
                         throw err;
                     }
+
+                    //res.cookie("token", token, {httpOnly: true});
 
                     return res.status(200).json({
                         success: true,
