@@ -7,7 +7,7 @@ import Book from "../middleware/book_model.js";
 
 const router = express.Router();
 
-router.post("/addBook", async (req,res) =>{
+router.post("/", async (req,res) =>{
     const decodedToken = validateJWT(req);
 
     if(!decodedToken){
@@ -16,8 +16,26 @@ router.post("/addBook", async (req,res) =>{
         });
     }
     else{
-        const pars = req.body;
-        console.log(pars);
+        if(req.body){
+            const {title, author, olid} = req.body;
+            
+            if(!Book.findOne({title: title, author: author})){
+                const book = new Book({title: title, author: author, olid: olid});
+                try{
+                    await book.save();
+                    res.status(201).send("Success!");
+                }
+                catch(error){
+                    res.status(400).send(error);
+                }
+                res.status(200).send("Added books to db!");
+            }
+            else{
+            }
+        }
+        else{
+            res.status(400).send("Issue with parameters!");
+        }
     }
 
 });

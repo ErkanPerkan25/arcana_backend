@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import cors from "cors";
 import session from "express-session";
+import bodyParser from 'body-parser';
 import "./loadEnvironment.js";
 
 const app = express();
@@ -18,8 +19,14 @@ import booksRouter from "./routes/books.js";
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(
+    bodyParser.urlencoded({
+        extended: true,
+    })
+)
 app.use(cors());
 
 // middleware for session
