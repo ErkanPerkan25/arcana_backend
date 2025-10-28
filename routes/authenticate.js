@@ -85,6 +85,7 @@ router.post("/signup", async (req,res)=>{
                     username: username,
                     email: email,
                     password: password,
+                    books_id: new Array,
                 });
 
 
@@ -114,8 +115,8 @@ router.post("/signup", async (req,res)=>{
                 return res.status(201).json({
                     success: true,
                     data: {
-                        userId: existignUser.id,
-                        email: existignUser.email,
+                        userId: user.id,
+                        email: user.email,
                         token: token
                     }
                 });

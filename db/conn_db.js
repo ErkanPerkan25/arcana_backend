@@ -4,8 +4,11 @@ import mongoose from "mongoose";
 
 // Replace the uri string with your connection string
 const uri = process.env.ATLAS_URI || "";
-const db = mongoose.connect(uri, {
+const db = await mongoose.connect(uri, {
     dbName:"Arcana_db",
+})
+.catch(error =>{
+    throw error;
 });
 
 /*

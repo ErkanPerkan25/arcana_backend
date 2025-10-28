@@ -18,20 +18,26 @@ router.post("/addBook", async (req,res) =>{
     else{
         if(req.body){
             const {title, author, olid} = req.body;
-            !Book.find({title: title, author: author})
+            !Book.findOne({title: title, author: author})
                 .then(result =>{
-                    
-                    if(result == null){
-                        const book = new Book({title: title, author: author, olid: olid});
+                    if(result === null){
+                        const book = new Book({
+                            title: title, 
+                            author: author, 
+                            olid: olid
+                        });
 
                         try{
                             console.log("We are on the saving part");
-                            book.save().then(() => console.log("Book saved!"));
+                            book.save().then(() => console.log("Book saved!")).catch(error =>{throw error});
                             res.status(201).send("Success!");
                         }
                         catch(error){
                             res.status(400).send(error);
                         }
+
+                    }
+                    else{
                     }
                 })
                 .catch(error =>{

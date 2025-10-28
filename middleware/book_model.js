@@ -3,16 +3,16 @@ import { Schema } from "mongoose";
 
 const schema = new Schema({
     title:{
-        type: "string",
+        type: String,
         require: true,
         createIndexes: {unique: true},
     },
     author:{
-        type: "string",
+        type: String,
         require: true,
     },
     olid:{
-        type: "string",
+        type: String,
         require: true,
     }
 });
@@ -27,7 +27,7 @@ schema.pre("save", async function save(next){
         book.author = book.author.trim();
     
     if(book.olid)
-        book.olid = book.author.trim();
+        book.olid = book.olid.trim();
 
     try{
         return next();

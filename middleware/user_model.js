@@ -9,18 +9,23 @@ const salt = await bcrypt.genSalt(10);
 
 const schema = new Schema({
     username:{
-        type: "string",
+        type: String,
         require: true,
     },
     email:{
-        type: "string",
+        type: String,
         require: true,
         validate: [isEmail, "Invalid email"],
         createIndexes: {unique: true},
     },
     password:{
-        type: "string",
+        type: String,
         require: true,
+    },
+    books_id:{
+        type: [String],
+        require: true,
+        default: undefined
     }
 });
 
@@ -39,8 +44,6 @@ schema.pre("save", async function save(next){
     try {
         user.password = await bcrypt.hash(user.password, salt);
         
-        console.log(user.password)
-
         return next();
     }
     catch(err){
