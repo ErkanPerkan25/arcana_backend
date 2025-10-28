@@ -1,7 +1,7 @@
 import User from "../middleware/user_model.js";
 import jwt from "jsonwebtoken";
 
-function validateJWT(req){
+function validateJWT(req,res){
     const token = req.headers.authorization.split(" ")[1];
 
     if(!token){

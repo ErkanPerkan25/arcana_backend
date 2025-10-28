@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 const router = express.Router();
 
 router.get("/", async(req, res) =>{
-    const decodedToken = validateJWT(req);
+    const decodedToken = validateJWT(req,res);
 
     if(!decodedToken){
         return res.status(400).json({

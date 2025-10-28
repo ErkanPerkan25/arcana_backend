@@ -7,8 +7,8 @@ import Book from "../middleware/book_model.js";
 
 const router = express.Router();
 
-router.post("/", async (req,res) =>{
-    const decodedToken = validateJWT(req);
+router.post("/addBook", async (req,res) =>{
+    const decodedToken = validateJWT(req,res);
 
     if(!decodedToken){
         return res.status(400).json({
@@ -18,20 +18,25 @@ router.post("/", async (req,res) =>{
     else{
         if(req.body){
             const {title, author, olid} = req.body;
-            
-            if(!Book.findOne({title: title, author: author})){
-                const book = new Book({title: title, author: author, olid: olid});
-                try{
-                    await book.save();
-                    res.status(201).send("Success!");
-                }
-                catch(error){
-                    res.status(400).send(error);
-                }
-                res.status(200).send("Added books to db!");
-            }
-            else{
-            }
+            !Book.find({title: title, author: author})
+                .then(result =>{
+                    
+                    if(result == null){
+                        const book = new Book({title: title, author: author, olid: olid});
+
+                        try{
+                            console.log("We are on the saving part");
+                            book.save().then(() => console.log("Book saved!"));
+                            res.status(201).send("Success!");
+                        }
+                        catch(error){
+                            res.status(400).send(error);
+                        }
+                    }
+                })
+                .catch(error =>{
+                    throw error; 
+                })
         }
         else{
             res.status(400).send("Issue with parameters!");

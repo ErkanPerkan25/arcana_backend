@@ -29,6 +29,12 @@ schema.pre("save", async function save(next){
     if(book.olid)
         book.olid = book.author.trim();
 
+    try{
+        return next();
+    }
+    catch(error){
+        return next(error);
+    }
 });
 
 const Book = mongoose.model("Book", schema);
