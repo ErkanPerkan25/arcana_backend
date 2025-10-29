@@ -18,8 +18,7 @@ router.post("/addBook", async (req,res) =>{
     else{
         if(req.body){
             const {title, author, olid, cookie} = req.body;
-            console.log();
-            !Book.findOne({title: title, author: author})
+            Book.findOne({title: title, author: author})
                 .then(result =>{
                     if(result === null){
                         const book = new Book({
@@ -30,22 +29,40 @@ router.post("/addBook", async (req,res) =>{
 
                         try{
                             book.save().then(() => console.log("Book saved!")).catch(error =>{throw error});
-                            res.status(201).send("Success!");
                         }
                         catch(error){
                             res.status(400).send(error);
                         }
 
+                        Book.findOne({title: title, author: author})
+                            .then(result =>{ 
+                                const id_book = result._id.toString();
+                                User.updateOne({ _id: cookie.username },{ $push: {books_id: id_book} })
+                                    .catch(error =>{
+                                        res.status(400).send(error);
+                                    })
+                                console.log("we get to book");
+                                res.status(201).send("Success");
+                            })
+                            .catch(error =>{
+                                res.status(400).send(error);
+                            });
+
                     }
                     else{
                         Book.findOne({title: title, author: author})
                             .then(result =>{ 
-                                User.updateOne({_id: cookie.username},{$push: {books_id: result._id.toString()}});
+                                const id_book = result._id.toString();
+                                User.updateOne({ _id: cookie.username },{ $push: {books_id: id_book} })
+                                    .catch(error =>{
+                                        res.status(400).send(error);
+                                    })
+                                console.log("we get to book");
+                                res.status(201).send("Success");
                             })
                             .catch(error =>{
-                                throw error;
+                                res.status(400).send(error);
                             });
-                            
                     }
                 })
                 .catch(error =>{
@@ -70,7 +87,8 @@ router.get("/", async (req,res) =>{
     else{
         User.findOne({email: decodedToken.email}, {books_id: 1}).lean()
             .then(data =>{
-                Book.find({}).lean()
+                const user_collection = data.books_id;
+                Book.find({_id: user_collection}).lean()
                     .then(data =>{
                         res.status(200).json(data);
                     })
