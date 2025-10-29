@@ -17,7 +17,8 @@ router.post("/addBook", async (req,res) =>{
     }
     else{
         if(req.body){
-            const {title, author, olid} = req.body;
+            const {title, author, olid, cookie} = req.body;
+            console.log();
             !Book.findOne({title: title, author: author})
                 .then(result =>{
                     if(result === null){
@@ -28,7 +29,6 @@ router.post("/addBook", async (req,res) =>{
                         });
 
                         try{
-                            console.log("We are on the saving part");
                             book.save().then(() => console.log("Book saved!")).catch(error =>{throw error});
                             res.status(201).send("Success!");
                         }
@@ -38,6 +38,14 @@ router.post("/addBook", async (req,res) =>{
 
                     }
                     else{
+                        Book.findOne({title: title, author: author})
+                            .then(result =>{ 
+                                User.updateOne({_id: cookie.username},{$push: {books_id: result._id.toString()}});
+                            })
+                            .catch(error =>{
+                                throw error;
+                            });
+                            
                     }
                 })
                 .catch(error =>{
