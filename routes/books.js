@@ -50,19 +50,15 @@ router.post("/addBook", async (req,res) =>{
 
                     }
                     else{
-                        Book.findOne({title: title, author: author})
-                            .then(result =>{ 
-                                const id_book = result._id.toString();
-                                User.updateOne({ _id: cookie.username },{ $push: {books_id: id_book} })
-                                    .catch(error =>{
-                                        res.status(400).send(error);
-                                    })
+                        const id_book = result._id.toString();
+                        User.updateOne({ _id: cookie.username },{ $push: {books_id: id_book} })
+                            .then(() =>{
                                 console.log("we get to book");
                                 res.status(201).send("Success");
                             })
                             .catch(error =>{
                                 res.status(400).send(error);
-                            });
+                            })
                     }
                 })
                 .catch(error =>{
@@ -73,6 +69,10 @@ router.post("/addBook", async (req,res) =>{
             res.status(400).send("Issue with parameters!");
         }
     }
+
+});
+
+router.delete("/deleteBook", async(req,res) =>{
 
 });
 
