@@ -15,6 +15,7 @@ const SECRET = process.env.SECRET;
 import authenticateRouter from "./routes/authenticate.js";
 import dashboardRouter from "./routes/dashboard.js";
 import booksRouter from "./routes/books.js";
+import notesRotuer from "./routes/notes.js";
 
 
 app.use(logger('dev'));
@@ -60,6 +61,7 @@ app.use(function(req,res, next){
 app.use("/authenticate", authenticateRouter);
 app.use("/dashboard", dashboardRouter);
 app.use("/books", booksRouter);
+app.use("/notes", notesRotuer);
 
 app.listen(PORT, ()=>{
     console.log(`Server is listening on port ${PORT}`);
