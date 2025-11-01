@@ -17,7 +17,6 @@ router.get("/", async(req, res) =>{
     else{
         User.findOne({email: decodedToken.email})
             .then(user =>{
-                console.log(user);
                 return res.status(200).json({
                     username: user.username,
                     email: user.email,
