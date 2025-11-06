@@ -14,7 +14,7 @@ router.get("/", async(req, res) =>{
         });
     }
     else{
-        Note.find({user_id: req.body.cookie.username, book_id: req.body.book_id})
+        Note.find({user_id: req.query.user_id, book_id: req.query.book_id})
             .then(data =>{
                 res.status(200).send(data);
             })
