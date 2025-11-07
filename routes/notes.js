@@ -1,5 +1,4 @@
 import express from "express"
-import db from "../db/conn_db.js";
 import validateJWT from "../middleware/validateJWT.js";
 import Note from "../middleware/note_model.js";
 
@@ -29,7 +28,7 @@ router.post("/", async(req,res) =>{
 
     if(!decodedToken){
         return res.status(400).json({
-            message: "Failed to verify token!",
+            message: "failed to verify token!",
         });
     }
     else{
@@ -47,6 +46,20 @@ router.post("/", async(req,res) =>{
 });
 
 router.put("/:id", async(req,res) =>{
+    const decodedToken = validateJWT(req);
+
+    if(!decodedToken){
+        return res.status(400).json({
+            message: "failed to verify token!",
+        });
+    }
+    else{
+        //Note.updateOne({_id: req.params.id}{$set: {}});
+    }
+
+});
+
+router.delete("/:id", async(req,res) =>{
 
 });
 
