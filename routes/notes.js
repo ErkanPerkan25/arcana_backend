@@ -57,7 +57,7 @@ router.put("/:id", async(req,res) =>{
         Note.updateOne({_id: req.params.id, user_id: req.body.cookie.username},
             {$set: {title: req.body.title, content: req.body.content, lastModified: Date.now()}})
         .then(response =>{
-                //console.log(response);
+                res.status(200).send(response);
         })
         .catch(error =>{
             res.status(400).send(error);
