@@ -39,7 +39,6 @@ router.post("/", async(req,res) =>{
             book_id: req.body.book_id,
             user_id: req.body.cookie.username
         });
-        console.log(note);
 
         res.status(201).send("Successfuly created a note.");
     }
@@ -67,6 +66,16 @@ router.put("/:id", async(req,res) =>{
 });
 
 router.delete("/:id", async(req,res) =>{
+    const decodedToken = validateJWT(req);
+
+    if(!decodedToken){
+        return res.status(400).json({
+            message: "failed to verify token!",
+        });
+    }
+    else{
+
+    }
 
 });
 
