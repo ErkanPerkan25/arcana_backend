@@ -1,8 +1,9 @@
-import express from "express"
+import express, { response } from "express"
 import db from "../db/conn_db.js";
 import User from "../middleware/user_model.js";
 import validateJWT from "../middleware/validateJWT.js";
 import Book from "../middleware/book_model.js";
+import Note from "../middleware/note_model.js";
 //import jwt from "jsonwebtoken";
 
 const router = express.Router();
@@ -72,8 +73,24 @@ router.post("/addBook", async (req,res) =>{
 
 });
 
-router.delete("/deleteBook", async(req,res) =>{
+router.delete("/:id", async(req,res) =>{
+    const decodedToken = validateJWT(req);
 
+    if(!decodedToken){
+        return res.status(400).json({
+            message: "Failed to verify token!",
+        })
+    }
+    else{
+        Book.deleteOne({_id: req.params.id})
+            .then(response =>{
+                Note.deleteMany({book_id: ObjectId(req.params.id), user_id: ObjectId(cookie.username) });
+                res.status(200).send(response);
+            })
+            .catch(error =>{
+                res.status(400).send(error);
+            })
+    }
 });
 
 router.get("/", async (req,res) =>{
