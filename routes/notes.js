@@ -32,9 +32,8 @@ router.post("/", async(req,res) =>{
         });
     }
     else{
-        console.log(req.body);
         const note = await Note.create({
-            title: "",
+            title: "Title",
             content: "",
             book_id: req.body.book_id,
             user_id: req.body.cookie.username
@@ -65,7 +64,7 @@ router.put("/:id", async(req,res) =>{
 
 });
 
-router.delete("/:id", async(req,res) =>{
+router.delete("/", async(req,res) =>{
     const decodedToken = validateJWT(req);
 
     if(!decodedToken){
@@ -74,7 +73,13 @@ router.delete("/:id", async(req,res) =>{
         });
     }
     else{
-
+        Note.deleteOne({_id: req.query.id})
+        .then(response =>{
+            res.status(200).send(response);
+        })
+        .catch(error =>{
+            res.status(400).send(error);
+        })
     }
 
 });
