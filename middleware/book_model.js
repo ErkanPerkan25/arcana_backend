@@ -37,6 +37,8 @@ schema.pre("save", async function save(next){
     }
 });
 
+schema.index({title: 1}, {unique: true});
+
 const Book = mongoose.model("Book", schema);
 
 export default Book;

@@ -86,7 +86,7 @@ router.delete("/:id", async(req,res) =>{
     }
     else{
         try{
-            const book = await Book.deleteOne({_id: req.params.id});
+            const book = await User.updateOne({_id: req.body.cookie.username},{$pull: {books_id: req.params.id}});
 
             if(!book){
                 res.status(404).json({message: "Couldn't find the book"});
