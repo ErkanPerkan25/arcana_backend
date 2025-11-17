@@ -19,55 +19,58 @@ router.post("/addBook", async (req,res) =>{
     else{
         if(req.body){
             const {title, author, olid, cookie} = req.body;
-            Book.findOne({title: title, author: author})
-                .then(result =>{
-                    if(result === null){
-                        const book = new Book({
-                            title: title, 
-                            author: author, 
-                            olid: olid
-                        });
+            const book = Book.findOne({title: title, author: author});
 
-                        try{
-                            book.save().then(() => console.log("Book saved!")).catch(error =>{throw error});
-                        }
-                        catch(error){
+            if(book){
+                const newBook = new Book({
+                    title: title, 
+                    author: author, 
+                    olid: olid
+                });
+
+                try{
+                    const result = await newBook.save();
+                    
+                    console.log("Book have been saved");
+                   
+                    if(!result){
+                        res.status(404).send("issue with saving book");
+                    }
+
+                    Book.findOne({title: title, author: author})
+                        .then(result =>{ 
+                            const id_book = result._id.toString();
+                            User.updateOne({ _id: cookie.username },{ $push: {books_id: id_book} })
+                                .catch(error =>{
+                                    console.log("Issue with adding books to user");
+                                    res.status(400).send(error);
+                                })
+                            res.status(201).send("Success");
+                        })
+                        .catch(error =>{
+                            console.log("Issue with finding book in MongoDB");
                             res.status(400).send(error);
-                        }
-
-                        Book.findOne({title: title, author: author})
-                            .then(result =>{ 
-                                const id_book = result._id.toString();
-                                User.updateOne({ _id: cookie.username },{ $push: {books_id: id_book} })
-                                    .catch(error =>{
-                                        res.status(400).send(error);
-                                    })
-                                console.log("we get to book");
-                                res.status(201).send("Success");
-                            })
-                            .catch(error =>{
-                                res.status(400).send(error);
-                            });
-
-                    }
-                    else{
-                        const id_book = result._id.toString();
-                        User.updateOne({ _id: cookie.username },{ $push: {books_id: id_book} })
-                            .then(() =>{
-                                console.log("we get to book");
-                                res.status(201).send("Success");
-                            })
-                            .catch(error =>{
-                                res.status(400).send(error);
-                            })
-                    }
-                })
-                .catch(error =>{
-                    throw error; 
-                })
+                        });
+                }
+                catch(error){
+                    console.log("here")
+                    res.status(400).send(error);
+                }
+            }
+            else{
+                const id_book = book._id.toString();
+                User.updateOne({ _id: cookie.username },{ $push: {books_id: id_book} })
+                    .then(() =>{
+                        console.log("we get to book");
+                        res.status(201).send("Success");
+                    })
+                    .catch(error =>{
+                        res.status(400).send(error);
+                    })
+            }
         }
         else{
-            res.status(400).send("Issue with parameters!");
+            res.status(400).send("Issue with request parameters to the server!");
         }
     }
 
@@ -82,14 +85,26 @@ router.delete("/:id", async(req,res) =>{
         })
     }
     else{
-        Book.deleteOne({_id: req.params.id})
-            .then(response =>{
-                Note.deleteMany({book_id: ObjectId(req.params.id), user_id: ObjectId(cookie.username) });
-                res.status(200).send(response);
-            })
-            .catch(error =>{
-                res.status(400).send(error);
-            })
+        try{
+            const book = await Book.deleteOne({_id: req.params.id});
+
+            if(!book){
+                res.status(404).json({message: "Couldn't find the book"});
+            }
+
+            const notes = await Note.deleteMany({book_id: req.params.id, user_id: req.body.cookie.username });
+
+            if(!notes){
+                res.status(404).json({message: "Issue with deleting notes"});
+            }
+            
+            return res.status(200).json({message: "Successfully deleted book and its notes"});
+        }
+        catch(error){
+            console.log(error);
+            return res.status(400).send(error);
+        }
+
     }
 });
 
