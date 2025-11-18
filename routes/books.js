@@ -1,10 +1,8 @@
-import express, { response } from "express"
-import db from "../db/conn_db.js";
+import express from "express"
 import User from "../middleware/user_model.js";
 import validateJWT from "../middleware/validateJWT.js";
 import Book from "../middleware/book_model.js";
 import Note from "../middleware/note_model.js";
-//import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
@@ -19,9 +17,9 @@ router.post("/addBook", async (req,res) =>{
     else{
         if(req.body){
             const {title, author, olid, cookie} = req.body;
-            const book = Book.findOne({title: title, author: author});
+            const book = await Book.findOne({title: title, author: author});
 
-            if(book){
+            if(!book){
                 const newBook = new Book({
                     title: title, 
                     author: author, 
@@ -58,7 +56,7 @@ router.post("/addBook", async (req,res) =>{
                 }
             }
             else{
-                const id_book = book._id.toString();
+                const id_book = book._id;
                 User.updateOne({ _id: cookie.username },{ $push: {books_id: id_book} })
                     .then(() =>{
                         console.log("we get to book");
