@@ -39,7 +39,7 @@ router.post("/login", basicAuth, async (req,res) =>{
                             email: existingUser.email
                         },
                         "secretkeyappearshere",
-                        {expiresIn: "1h"},
+                        {expiresIn: "2h"},
                         );
 
                     }
