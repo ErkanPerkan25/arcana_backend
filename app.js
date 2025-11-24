@@ -29,7 +29,9 @@ app.use(
     })
 )
 app.use(cors({
-    origin: ["http://localhost:5173", "https://arcananotes.vercel.app"], 
+    origin: isProduction 
+        ? "https://arcananotes.vercel.app"
+        : "http://localhost:5173", 
     credentials: true
 }));
 
