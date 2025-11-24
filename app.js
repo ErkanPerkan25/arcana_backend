@@ -26,9 +26,7 @@ app.use(
 const isProduction = process.env.NODE_ENV === "production";
 
 app.use(cors({
-    origin: isProduction 
-        ? "https://arcananotes.vercel.app"
-        : "http://localhost:5173", 
+    origin: ["https://arcananotes.vercel.app", "http://localhost:5173"],
     credentials: true
 }));
 
@@ -78,3 +76,5 @@ app.use("/notes", notesRotuer);
 app.listen(PORT, ()=>{
     console.log(`Server is listening on port ${PORT}`);
 })
+
+module.exports = app;
