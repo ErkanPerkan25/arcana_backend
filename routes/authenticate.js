@@ -38,8 +38,8 @@ router.post("/login", basicAuth, async (req,res) =>{
                             userId: existingUser.id,
                             email: existingUser.email
                         },
-                        "secretkeyappearshere",
-                        {expiresIn: "1h"},
+                        process.env.JSECRET,
+                        {expiresIn: "2h"},
                         );
 
                     }
@@ -103,7 +103,7 @@ router.post("/signup", async (req,res)=>{
                             userId: user.id,
                             email: user.email
                         },
-                        "secretkeyappearshere",
+                        process.env.JSECRET,
                         {expiresIn: "1h"}
                     );
                 }
