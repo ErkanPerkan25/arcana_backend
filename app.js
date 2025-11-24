@@ -11,12 +11,6 @@ const app = express();
 const PORT = process.env.PORT || 5050;
 const SECRET = process.env.SECRET;
 
-// Getting all the routes
-import authenticateRouter from "./routes/authenticate.js";
-import dashboardRouter from "./routes/dashboard.js";
-import booksRouter from "./routes/books.js";
-import notesRotuer from "./routes/notes.js";
-
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -54,6 +48,13 @@ app.use(session({
         sameSite: isProduction ? "none" : "lax"
     }, 
 }));
+
+// Getting all the routes
+import authenticateRouter from "./routes/authenticate.js";
+import dashboardRouter from "./routes/dashboard.js";
+import booksRouter from "./routes/books.js";
+import notesRotuer from "./routes/notes.js";
+
 
 app.use(function(req,res, next){
     const err = req.session.error;
