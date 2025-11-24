@@ -11,7 +11,7 @@ function validateJWT(req,res){
         });
     }
 
-    const decodedToken = jwt.verify(token, "secretkeyappearshere");
+    const decodedToken = jwt.verify(token, process.env.JSECRET);
 
     return decodedToken;
 }

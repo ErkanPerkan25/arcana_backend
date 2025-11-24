@@ -30,18 +30,19 @@ app.use(
 )
 app.use(cors());
 
+const expiryDate = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
+
 // middleware for session
 app.set("trust proxy", 1); // trust first proxy
 app.use(session({
     resave: false,
     saveUninitialized: true,
-    secret: SECRET,
+    secret: process.env.SECRET,
     cookie: {
-        maxAge: null,
+        expires: expiryDate,
         httpOnly: true,
         secure: true, // set secure: true for HTTPS
     }, 
-    
 }));
 
 app.use(function(req,res, next){
