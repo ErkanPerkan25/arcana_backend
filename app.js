@@ -28,6 +28,9 @@ app.use(
         extended: true,
     })
 )
+
+const isProduction = process.env.NODE_ENV === "production";
+
 app.use(cors({
     origin: isProduction 
         ? "https://arcananotes.vercel.app"
@@ -36,10 +39,10 @@ app.use(cors({
 }));
 
 const expiryDate = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
-const isProduction = process.env.NODE_ENV === "production";
 
 // middleware for session
 app.set("trust proxy", 1); // trust first proxy
+
 app.use(session({
     resave: false,
     saveUninitialized: true,
