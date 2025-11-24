@@ -29,21 +29,24 @@ app.use(
     })
 )
 app.use(cors({
-    origin: ["http://localhost:5173", "https://arcananotes.vercel.app"] 
+    origin: ["http://localhost:5173", "https://arcananotes.vercel.app"], 
+    credentials: true
 }));
 
 const expiryDate = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
+const isProduction = process.env.NODE_ENV === "production";
 
 // middleware for session
 app.set("trust proxy", 1); // trust first proxy
 app.use(session({
     resave: false,
     saveUninitialized: true,
-    secret: process.env.SECRET,
+    secret: SECRET,
     cookie: {
         expires: expiryDate,
         httpOnly: true,
-        secure: true, // set secure: true for HTTPS
+        secure: isProduction, // set secure: true for HTTPS
+        sameSite: isProduction ? "none" : "lax"
     }, 
 }));
 
