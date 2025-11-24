@@ -28,7 +28,9 @@ app.use(
         extended: true,
     })
 )
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:5173", "https://arcananotes.vercel.app"] 
+}));
 
 const expiryDate = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
 
